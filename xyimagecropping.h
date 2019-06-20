@@ -12,6 +12,11 @@ public:
     void setImage(const QString &file);
     void setPath(const QPainterPath &path);
 
+    void savePixmap();
+    void reloadPixmap();
+    void cropping();
+    void croppingXored();
+
 protected:
     void paintEvent(QPaintEvent *event);
     bool event(QEvent *event);
@@ -19,12 +24,15 @@ protected:
 private:
     void movePixmapToCenter();
     void movePathToCenter();
+    void clearPath();
 
 private:
     QPainterPath mCroppingPath;
     QPoint       mPathPos;
     QPixmap      mPixmap;
     QPoint       mPixmapPos;
+
+    QString      mPixmapFilePath;
 };
 
 #endif // XYIMAGECROPPING_H

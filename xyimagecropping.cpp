@@ -1,6 +1,8 @@
 ﻿#include "xyimagecropping.h"
 #include <QPainter>
 #include <QMouseEvent>
+#include <QFileDialog>
+#include <QDebug>
 
 XYImageCropping::XYImageCropping(QWidget *parent)
     : QWidget(parent)
@@ -10,8 +12,8 @@ XYImageCropping::XYImageCropping(QWidget *parent)
 
 void XYImageCropping::setImage(const QString &file)
 {
-    mPixmap.load(file);
-    movePixmapToCenter();
+    mPixmapFilePath = file;
+    reloadPixmap();
 }
 
 void XYImageCropping::setPath(const QPainterPath &path)
@@ -19,6 +21,51 @@ void XYImageCropping::setPath(const QPainterPath &path)
     mCroppingPath = path;
     mPathPos = QPoint(0, 0);
     update();
+}
+
+void XYImageCropping::savePixmap()
+{
+    QString path = QFileDialog::getSaveFileName(this);
+    if (!path.isEmpty())
+    {
+        mPixmap.save(path);
+    }
+}
+
+void XYImageCropping::reloadPixmap()
+{
+    mPixmap.load(mPixmapFilePath);
+    movePixmapToCenter();
+}
+
+void XYImageCropping::cropping()
+{
+    mCroppingPath.translate(mPathPos - mPixmapPos);
+    QRect rect = mCroppingPath.boundingRect().toRect();
+    mPixmap = mPixmap.copy(rect);
+
+    QPixmap mask(rect.size());
+    mask.fill(Qt::white);
+
+    QPainter painter;
+    painter.begin(&mask);
+    painter.setCompositionMode(QPainter::CompositionMode_Clear);
+    painter.setBrush(Qt::transparent);
+    painter.drawPath(mCroppingPath.translated(-rect.topLeft()));
+    painter.end();
+
+    painter.begin(&mPixmap);
+    painter.setCompositionMode(QPainter::CompositionMode_Xor);
+    painter.drawPixmap(mPixmap.rect(), mask);
+    painter.end();
+
+    clearPath();
+    movePixmapToCenter();
+}
+
+void XYImageCropping::croppingXored()
+{
+
 }
 
 void XYImageCropping::paintEvent(QPaintEvent *)
@@ -29,6 +76,7 @@ void XYImageCropping::paintEvent(QPaintEvent *)
     }
 
     QPainter painter(this);
+    painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
     painter.setRenderHint(QPainter::Antialiasing);
 
     // 绘制图片
@@ -74,6 +122,7 @@ bool XYImageCropping::event(QEvent *event)
             pressedPos = pos;
             update();
         }
+        break;
     default:
         break;
     }
@@ -103,4 +152,11 @@ void XYImageCropping::movePathToCenter()
         mPathPos = QPoint(woffset > 0 ? woffset/2:0, hoffset > 0 ? hoffset/2:0);
         update();
     }
+}
+
+void XYImageCropping::clearPath()
+{
+    mPathPos = QPoint();
+    mCroppingPath = QPainterPath();
+    update();
 }

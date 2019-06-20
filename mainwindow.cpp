@@ -129,15 +129,20 @@ void MainWindow::on_pushButton_clicked() // 选择图片
 
 void MainWindow::on_pushButton_3_clicked() // 裁剪
 {
-
+    ui->widget->cropping();
 }
 
 void MainWindow::on_pushButton_4_clicked() // 反向裁剪
 {
-
+    ui->widget->croppingXored();
 }
 
 void MainWindow::on_pushButton_2_clicked() // 保存
 {
+    ui->widget->savePixmap();
+}
 
+void MainWindow::on_pushButton_5_clicked() // 还原
+{
+    ui->widget->reloadPixmap();
 }
