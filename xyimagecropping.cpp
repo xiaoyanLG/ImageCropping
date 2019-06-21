@@ -41,6 +41,20 @@ void XYImageCropping::reloadPixmap()
 void XYImageCropping::cropping()
 {
     mCroppingPath.translate(mPathPos - mPixmapPos);
+
+    QPainter painter;
+    painter.begin(&mPixmap);
+    painter.setCompositionMode(QPainter::CompositionMode_Clear);
+    painter.setBrush(Qt::transparent);
+    painter.drawPath(mCroppingPath);
+    painter.end();
+
+    clearPath();
+}
+
+void XYImageCropping::croppingXored()
+{
+    mCroppingPath.translate(mPathPos - mPixmapPos);
     QRect rect = mCroppingPath.boundingRect().toRect();
     mPixmap = mPixmap.copy(rect);
 
@@ -63,11 +77,6 @@ void XYImageCropping::cropping()
     movePixmapToCenter();
 }
 
-void XYImageCropping::croppingXored()
-{
-
-}
-
 void XYImageCropping::paintEvent(QPaintEvent *)
 {
     if (mPixmap.isNull())
@@ -76,7 +85,6 @@ void XYImageCropping::paintEvent(QPaintEvent *)
     }
 
     QPainter painter(this);
-    painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
     painter.setRenderHint(QPainter::Antialiasing);
 
     // 绘制图片
