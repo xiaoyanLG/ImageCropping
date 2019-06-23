@@ -18,9 +18,12 @@ void XYImageCropping::setImage(const QString &file)
 
 void XYImageCropping::setPath(const QPainterPath &path)
 {
-    mCroppingPath = path;
-    mPathPos = QPoint(0, 0);
-    update();
+    if (!mImage.isNull())
+    {
+        mCroppingPath = path;
+        mPathPos = QPoint(0, 0);
+        update();
+    }
 }
 
 void XYImageCropping::savePixmap()
