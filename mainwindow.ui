@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>525</width>
-    <height>399</height>
+    <width>639</width>
+    <height>500</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -94,7 +94,7 @@
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;适合小图标&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;的剪裁效果&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;适合小图标&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;的剪裁效果&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;(用法：按住&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Ctrl键来&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;绘制形状，&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;多边形按&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;住Ctrl，然&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;后点击顶&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;点位置，释&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;放Ctrl的时&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;候完成多&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;边形绘制)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="textFormat">
          <enum>Qt::RichText</enum>
@@ -158,7 +158,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>525</width>
+     <width>639</width>
      <height>23</height>
     </rect>
    </property>

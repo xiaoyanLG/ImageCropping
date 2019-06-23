@@ -18,6 +18,8 @@ public:
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
+    void dragEnterEvent(QDragEnterEvent *event);
+    void dropEvent(QDropEvent *event);
 
 private slots:
     void on_pushButton_clicked();

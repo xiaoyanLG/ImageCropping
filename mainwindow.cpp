@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QMouseEvent>
 #include <QFileDialog>
+#include <QMimeData>
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -28,6 +29,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     mCurShape = Rect;
     ui->radioButton->clicked(true);
+
+    setAcceptDrops(true);
 }
 
 MainWindow::~MainWindow()
@@ -129,6 +132,20 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
     }
 
     return QMainWindow::eventFilter(obj, event);
+}
+
+void MainWindow::dragEnterEvent(QDragEnterEvent *event)
+{
+    event->accept();
+}
+
+void MainWindow::dropEvent(QDropEvent *event)
+{
+    auto data = event->mimeData();
+    if (data->hasUrls())
+    {
+        ui->widget->setImage(data->urls().first().toLocalFile());
+    }
 }
 
 void MainWindow::on_pushButton_clicked() // 选择图片
