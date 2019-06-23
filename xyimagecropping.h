@@ -29,10 +29,10 @@ private:
 private:
     QPainterPath mCroppingPath;
     QPoint       mPathPos;
-    QPixmap      mPixmap;
-    QPoint       mPixmapPos;
+    QImage       mImage;
+    QPoint       mImagePos;
 
-    QString      mPixmapFilePath;
+    QString      mImageFilePath;
 };
 
 #endif // XYIMAGECROPPING_H

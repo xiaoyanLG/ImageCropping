@@ -2,7 +2,6 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include <QFileDialog>
-#include <QDebug>
 
 XYImageCropping::XYImageCropping(QWidget *parent)
     : QWidget(parent)
@@ -12,7 +11,8 @@ XYImageCropping::XYImageCropping(QWidget *parent)
 
 void XYImageCropping::setImage(const QString &file)
 {
-    mPixmapFilePath = file;
+    mImageFilePath = file;
+
     reloadPixmap();
 }
 
@@ -28,22 +28,23 @@ void XYImageCropping::savePixmap()
     QString path = QFileDialog::getSaveFileName(this);
     if (!path.isEmpty())
     {
-        mPixmap.save(path);
+        mImage.save(path);
     }
 }
 
 void XYImageCropping::reloadPixmap()
 {
-    mPixmap.load(mPixmapFilePath);
+    mImage.load(mImageFilePath);
+    mImage = mImage.convertToFormat(QImage::Format_ARGB32_Premultiplied);
     movePixmapToCenter();
 }
 
 void XYImageCropping::cropping()
 {
-    mCroppingPath.translate(mPathPos - mPixmapPos);
+    mCroppingPath.translate(mPathPos - mImagePos);
 
     QPainter painter;
-    painter.begin(&mPixmap);
+    painter.begin(&mImage);
     painter.setCompositionMode(QPainter::CompositionMode_Clear);
     painter.setBrush(Qt::transparent);
     painter.drawPath(mCroppingPath);
@@ -54,11 +55,11 @@ void XYImageCropping::cropping()
 
 void XYImageCropping::croppingXored()
 {
-    mCroppingPath.translate(mPathPos - mPixmapPos);
+    mCroppingPath.translate(mPathPos - mImagePos);
     QRect rect = mCroppingPath.boundingRect().toRect();
-    mPixmap = mPixmap.copy(rect);
+    mImage = mImage.copy(rect);
 
-    QPixmap mask(rect.size());
+    QImage mask(rect.size(), QImage::Format_ARGB32_Premultiplied);
     mask.fill(Qt::white);
 
     QPainter painter;
@@ -68,9 +69,9 @@ void XYImageCropping::croppingXored()
     painter.drawPath(mCroppingPath.translated(-rect.topLeft()));
     painter.end();
 
-    painter.begin(&mPixmap);
+    painter.begin(&mImage);
     painter.setCompositionMode(QPainter::CompositionMode_Xor);
-    painter.drawPixmap(mPixmap.rect(), mask);
+    painter.drawImage(mImage.rect(), mask);
     painter.end();
 
     clearPath();
@@ -79,7 +80,7 @@ void XYImageCropping::croppingXored()
 
 void XYImageCropping::paintEvent(QPaintEvent *)
 {
-    if (mPixmap.isNull())
+    if (mImage.isNull())
     {
         return;
     }
@@ -88,7 +89,7 @@ void XYImageCropping::paintEvent(QPaintEvent *)
     painter.setRenderHint(QPainter::Antialiasing);
 
     // 绘制图片
-    painter.drawPixmap(mPixmapPos, mPixmap);
+    painter.drawImage(mImagePos, mImage);
 
     // 绘制裁剪路径
     QTransform trs;
@@ -111,7 +112,7 @@ bool XYImageCropping::event(QEvent *event)
                 .translated(mPathPos).contains(pressedPos)) {
             pressed = true;
             movePath = true;
-        } else if (!mPixmap.isNull() && QRect(mPixmapPos, mPixmap.size()).contains(pressedPos)) {
+        } else if (!mImage.isNull() && QRect(mImagePos, mImage.size()).contains(pressedPos)) {
             pressed = true;
             movePath = false;
         }
@@ -125,7 +126,7 @@ bool XYImageCropping::event(QEvent *event)
             if (movePath) {
                 mPathPos += pos - pressedPos;
             } else {
-                mPixmapPos += pos - pressedPos;
+                mImagePos += pos - pressedPos;
             }
             pressedPos = pos;
             update();
@@ -140,12 +141,12 @@ bool XYImageCropping::event(QEvent *event)
 
 void XYImageCropping::movePixmapToCenter()
 {
-    if (!mPixmap.isNull())
+    if (!mImage.isNull())
     {
-        QRect geometry = mPixmap.rect();
+        QRect geometry = mImage.rect();
         int woffset = width() - geometry.width();
         int hoffset = height() - geometry.height();
-        mPixmapPos = QPoint(woffset > 0 ? woffset/2:0, hoffset > 0 ? hoffset/2:0);
+        mImagePos = QPoint(woffset > 0 ? woffset/2:0, hoffset > 0 ? hoffset/2:0);
         update();
     }
 }
