@@ -70,7 +70,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
         switch (event->type())
         {
         case QEvent::MouseButtonPress:
-            if (mCurShape == Polygon) {
+            if (mCurShape == Polygon || mCurShape == USER) {
                 QPoint pos = static_cast<QMouseEvent *>(event)->pos();
                 if (!startDraw) {
                     mDrawPath.moveTo(pos);
@@ -86,6 +86,13 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
             return true;
         case QEvent::MouseButtonRelease:
             pressed = false;
+            if (mCurShape == USER)
+            {
+                QPoint pos = static_cast<QMouseEvent *>(event)->pos();
+                startDraw = false;
+                mDrawPath.lineTo(pos);
+                ui->widget->setPath(mDrawPath);
+            }
             return true;
         case QEvent::MouseMove:
             if (pressed) {
@@ -106,6 +113,12 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
                     tmpPath.addEllipse(QRect(mx, my, w, h));
                     mDrawPath = tmpPath;
                     ui->widget->setPath(mDrawPath);
+                    break;
+                case USER:
+                    mDrawPath.lineTo(curPos);
+                    ui->widget->setPath(mDrawPath);
+                    break;
+                default:
                     break;
                 }
             }
