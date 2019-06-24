@@ -78,7 +78,7 @@
       <item>
        <widget class="QGroupBox" name="groupBox">
         <property name="title">
-         <string>适合小图标的剪裁效果(用法：按住Ctrl键来绘制形状，多边形 按住Ctrl，然后点击顶点位置，释放Ctrl的时候完成多边形绘制)</string>
+         <string>适合小图标的剪裁效果(用法：按住Ctrl键来绘制形状，多边形按住Ctrl，然后点击顶点位置，释放Ctrl的时候完成多边形绘制)</string>
         </property>
         <property name="flat">
          <bool>true</bool>
