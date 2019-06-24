@@ -126,13 +126,17 @@ bool XYImageCropping::event(QEvent *event)
     case QEvent::MouseMove:
         if (pressed) {
             QPoint pos = static_cast<QMouseEvent *>(event)->pos();
+            QRegion last;
             if (movePath) {
+                last = QRegion(mCroppingPath.boundingRect().translated(mPathPos).toRect());
                 mPathPos += pos - pressedPos;
+                update(last + mCroppingPath.boundingRect().translated(mPathPos).toRect());
             } else {
+                last = QRegion(mImage.rect().translated(mImagePos));
                 mImagePos += pos - pressedPos;
+                update(last + mImage.rect().translated(mImagePos));
             }
             pressedPos = pos;
-            update();
         }
         break;
     default:
