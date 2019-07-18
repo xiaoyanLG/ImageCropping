@@ -16,15 +16,19 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->radioButton, &QRadioButton::clicked, this, [this](){
         this->mCurShape = Rect;
+        this->ui->widget->setPath(QPainterPath());
     });
     connect(ui->radioButton_2, &QRadioButton::clicked, this, [this](){
         this->mCurShape = Ellipse;
+        this->ui->widget->setPath(QPainterPath());
     });
     connect(ui->radioButton_3, &QRadioButton::clicked, this, [this](){
         this->mCurShape = Polygon;
+        this->ui->widget->setPath(QPainterPath());
     });
     connect(ui->radioButton_4, &QRadioButton::clicked, this, [this](){
         this->mCurShape = USER;
+        this->ui->widget->setPath(QPainterPath());
     });
 
     mCurShape = Rect;

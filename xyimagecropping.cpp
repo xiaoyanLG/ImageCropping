@@ -83,13 +83,14 @@ void XYImageCropping::croppingXored()
 
 void XYImageCropping::paintEvent(QPaintEvent *)
 {
+    QPainter painter(this);
+    painter.setRenderHints(QPainter::SmoothPixmapTransform);
+    painter.fillRect(rect(), "#808080");
+
     if (mImage.isNull())
     {
         return;
     }
-
-    QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing);
 
     // 绘制图片
     painter.drawImage(mImagePos, mImage);
@@ -98,6 +99,9 @@ void XYImageCropping::paintEvent(QPaintEvent *)
     QTransform trs;
     trs.translate(mPathPos.x(), mPathPos.y());
     painter.setTransform(trs);
+    QPen pen = painter.pen();
+    pen.setColor("#808080");
+    painter.setPen(pen);
     painter.drawPath(mCroppingPath);
 }
 
@@ -128,9 +132,9 @@ bool XYImageCropping::event(QEvent *event)
             QPoint pos = static_cast<QMouseEvent *>(event)->pos();
             QRegion last;
             if (movePath) {
-                last = QRegion(mCroppingPath.boundingRect().translated(mPathPos).toRect());
+                last = QRegion(mCroppingPath.boundingRect().translated(mPathPos).toRect().adjusted(-1, -1, 1, 1));
                 mPathPos += pos - pressedPos;
-                update(last + mCroppingPath.boundingRect().translated(mPathPos).toRect());
+                update(last + mCroppingPath.boundingRect().translated(mPathPos).toRect().adjusted(-1, -1, 1, 1));
             } else {
                 last = QRegion(mImage.rect().translated(mImagePos));
                 mImagePos += pos - pressedPos;
